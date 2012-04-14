@@ -1,0 +1,16 @@
+{% load compress %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+    {% compress css %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-sass/bootstrap.scss" type="text/x-scss" charset="utf-8">
+    {% endcompress %}
+</head>
+<body>
+{% block content %}
+
+{% endblock %}
+</body>
+</html>
