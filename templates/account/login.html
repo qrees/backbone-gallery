@@ -4,7 +4,15 @@
 {% block content %}
     <form class="well" method="POST">
     {% csrf_token %}
-        {{ form }}
+        <div class="control-group error">
+        <div class="controls">
+            {% for error in form.non_field_errors %}
+                <span class="help-inline">{{ error }}</span>
+            {% endfor %}
+        </div>
+        </div>
+        {% include "forms/text_field.html" with field=form.username %}
+        {% include "forms/password_field.html" with field=form.password %}
         <div><button type="submit" class="btn">{% trans "Login" %}</button></div>
     </form>
 {% endblock %}
