@@ -4,7 +4,10 @@ from account.models import Profile
 
 class ProfileBackend(object):
     def authenticate(self, username=None, password=None):
-        user = Profile.objects.get(username=username).user
+        try:
+            user = Profile.objects.get(username=username).user
+        except Profile.DoesNotExist:
+            return None
         if check_password(password, user.password):
             return user
         return None

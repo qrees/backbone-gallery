@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block content %}
-    {% blocktrans with usernmae=request.actor.username %}
+    {% blocktrans with username=request.actor.username %}
         Welcome {{ username }}.
     {% endblocktrans %}
 {% endblock %}
