@@ -1,27 +1,18 @@
-# Create your views here.
-from django.conf import settings
-from django.http import HttpResponse
-from django.template.context import RequestContext
+
+from django.core.urlresolvers import reverse
 from django.views.generic.edit import FormView
-import jinja2
 
-from account.forms import LoginForm
+from account.forms import LoginForm, RegisterForm
 
 
-template_dirs = getattr(settings,'TEMPLATE_DIRS')
-default_mimetype = getattr(settings, 'DEFAULT_CONTENT_TYPE')
-env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dirs))
+class RegisterView(FormView):
+    form_class = RegisterForm
+    template_name = 'account/register.html'
 
 
 class LoginView(FormView):
     form_class = LoginForm
     template_name = 'account/login.html'
-    def render_to_response(self, context, **response_kwargs):
-        template = env.select_template(self.get_template_names())
-        context = RequestContext(self.request, context)
-        context = context.update({'request': self.request})
-        rendered = template.render(**context)
-        return HttpResponse(
-            rendered,
-            **response_kwargs
-        )
+
+    def get_success_url(self):
+        return reverse('user_page')

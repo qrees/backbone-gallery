@@ -1,1 +1,4 @@
 *.pyc
+*.db
+
+static/compress/CACHE

@@ -1,16 +1,22 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
-
-from django.test import TestCase
+from django import test
+from django.core.urlresolvers import reverse
+from account.models import Profile
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+class AccountTest(test.TestCase):
+
+    def setUp(self):
+        self.client = test.Client()
+
+    def test_register(self):
+        url = reverse('account-register')
+        result = self.client.post(url,
+            data={
+                'username': 'test',
+                'password1': 'pass',
+                'password2': 'pass'
+            }
+        )
+        self.assertEqual(result.status_code, 200)
+        self.assertQuerysetEqual(Profile.objects.filter(username='test'), [])
+

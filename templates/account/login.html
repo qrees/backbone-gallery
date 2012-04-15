@@ -11,6 +11,7 @@
             {% endfor %}
         </div>
         </div>
+        <input type="hidden" name="next" value="{{ next }}"/>
         {% include "forms/text_field.html" with field=form.username %}
         {% include "forms/password_field.html" with field=form.password %}
         <div><button type="submit" class="btn">{% trans "Login" %}</button></div>

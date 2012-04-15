@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <form class="well" method="POST">
+        {% csrf_token %}
+        <div class="control-group error">
+            <div class="controls">
+                {% for error in form.non_field_errors %}
+                    <span class="help-inline">{{ error }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        <input type="hidden" name="next" value="{{ next }}"/>
+        {% include "forms/text_field.html" with field=form.username %}
+        {% include "forms/password_field.html" with field=form.password1 %}
+        {% include "forms/password_field.html" with field=form.password2 %}
+        <div><button type="submit" class="btn">{% trans "Register" %}</button></div>
+    </form>
+{% endblock %}

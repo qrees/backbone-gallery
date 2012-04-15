@@ -1,10 +1,11 @@
-__author__ = 'qrees'
-
 from django.conf.urls import patterns, url
-from django.contrib.auth.views import login
-from account.forms import LoginForm
+
+from account.views import LoginView, RegisterView
+
 
 urlpatterns = patterns('',
-    url(r'^login/$', login, kwargs={'template_name': 'account/login.html'}),
+    url(r'^login/$', LoginView.as_view(), name="account-login"),
+    url(r'^register/$', RegisterView.as_view(), name="account-register"),
+
 
 )

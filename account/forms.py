@@ -1,7 +1,9 @@
-__author__ = 'qrees'
-
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
+from django.forms.util import ErrorList
+from django.utils.translation import ugettext_lazy as _
+
+from account.models import Profile
 
 class BootstrapWidget(forms.Widget):
     pass
@@ -28,6 +30,40 @@ class BootstrapForm(forms.Form):
             row_ender = '</div>',
             help_text_html = u' <span class="helptext">%s</span>',
             errors_on_separate_row = False)
+
+
+
+class RegisterForm(BootstrapForm):
+
+    username = forms.CharField(max_length=255)
+    email = forms.CharField(max_length=255)
+    password1 = forms.CharField(required=True, label=_("Password"), widget=forms.PasswordInput())
+    password2 = forms.CharField(required=True, label=_("Repeat password"), widget=forms.PasswordInput())
+
+    def clean_username(self):
+        username = self.cleaned_data['username'].strip()
+        if Profile.objects.filter(username__iexact=username).exists():
+            raise forms.ValidationError("User with this name already exists")
+        return self.cleaned_data['username']
+
+    def clean_email(self):
+        username = self.cleaned_data['username'].strip()
+        if Profile.objects.filter(username__iexact=username).exists():
+            raise forms.ValidationError("User with this name already exists")
+        return self.cleaned_data['username']
+
+    def clean(self):
+        if self.cleaned_data['password1'] != self.cleaned_data['password2']:
+            self._errors['password2'] = self._errors.get('password2', ErrorList())
+            self._errors['password2'].append(_('Passwords do not match.'))
+        return self.cleaned_data
+
+    def save(self):
+        Profile.objects.create(
+                password=self.cleaned_data['password1'],
+                username=self.cleaned_data['username'],
+                email=self.cleaned_data['email'])
+
 
 class LoginForm(BootstrapForm, AuthenticationForm):
     pass

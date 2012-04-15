@@ -123,6 +123,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
 
+    "south",
     "compressor",
 
     'account',
@@ -161,7 +162,5 @@ COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'python scss_process.py  {infile} {outfile}'),
 )
 
-
 COMPRESS_ENABLED = True
 COMPRESS_ROOT = _relative('static/compress')
-COMPRESS_REBUILD_TIMEOUT = 0
