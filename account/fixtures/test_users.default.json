@@ -1,0 +1,31 @@
+[
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "uuid+91609af4-e782-4c10-a512-a637514c9833", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-04-15T17:47:49.385Z", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "pbkdf2_sha256$10000$Uy6BvjLeI3O2$zmgtR9AoP7APobstzNJPQxnRDOLBUSfpaCWwM0rV5ls=", 
+            "email": "", 
+            "date_joined": "2012-04-15T17:47:49.385Z"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "account.profile", 
+        "fields": {
+            "username": "simon", 
+            "user": [
+                "uuid+91609af4-e782-4c10-a512-a637514c9833"
+            ], 
+            "email": "simon@example.com"
+        }
+    }
+]

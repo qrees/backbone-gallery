@@ -1,0 +1,3 @@
+django
+https://github.com/qrees/django-fixture-generator/zipball/master
+

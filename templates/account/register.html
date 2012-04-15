@@ -13,6 +13,7 @@
         </div>
         <input type="hidden" name="next" value="{{ next }}"/>
         {% include "forms/text_field.html" with field=form.username %}
+        {% include "forms/text_field.html" with field=form.email %}
         {% include "forms/password_field.html" with field=form.password1 %}
         {% include "forms/password_field.html" with field=form.password2 %}
         <div><button type="submit" class="btn">{% trans "Register" %}</button></div>

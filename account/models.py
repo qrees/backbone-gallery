@@ -18,3 +18,6 @@ class Profile(models.Model):
     user = models.ForeignKey('auth.User')
     email = models.CharField(max_length=255, unique=True)
     username = models.CharField(max_length=255, unique=True)
+
+    def __unicode__(self):
+        return self.username

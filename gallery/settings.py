@@ -98,8 +98,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'account.middleware.ProfileMiddleware'
 )
 
 ROOT_URLCONF = 'gallery.urls'
@@ -122,7 +122,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-
+    "fixture_generator",
     "south",
     "compressor",
 
@@ -157,6 +157,11 @@ LOGGING = {
         },
     }
 }
+
+AUTHENTICATION_BACKENDS = (
+    'account.auth.ProfileBackend',
+)
+# COMPRESS
 
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'python scss_process.py  {infile} {outfile}'),
