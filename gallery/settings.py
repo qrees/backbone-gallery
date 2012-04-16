@@ -122,6 +122,7 @@ INSTALLED_APPS = (
     "fixture_generator",
     "south",
     "compressor",
+    'social_auth',
 
     'account',
 )
@@ -166,9 +167,61 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
 )
 
+
+
+# Django Social Auth settings
+
 AUTHENTICATION_BACKENDS = (
     'account.auth.ProfileBackend',
+
+    #'social_auth.backends.twitter.TwitterBackend',
+    #'social_auth.backends.facebook.FacebookBackend',
+    #'social_auth.backends.google.GoogleOAuthBackend',
+    'social_auth.backends.google.GoogleOAuth2Backend',
+    #'social_auth.backends.google.GoogleBackend',
+    #'social_auth.backends.yahoo.YahooBackend',
+    #'social_auth.backends.browserid.BrowserIDBackend',
+    #'social_auth.backends.contrib.linkedin.LinkedinBackend',
+    #'social_auth.backends.contrib.livejournal.LiveJournalBackend',
+    #'social_auth.backends.contrib.orkut.OrkutBackend',
+    #'social_auth.backends.contrib.foursquare.FoursquareBackend',
+    #'social_auth.backends.contrib.github.GithubBackend',
+    #'social_auth.backends.contrib.dropbox.DropboxBackend',
+    #'social_auth.backends.contrib.flickr.FlickrBackend',
+    #'social_auth.backends.contrib.instagram.InstagramBackend',
+    'social_auth.backends.OpenIDBackend',
 )
+
+TWITTER_CONSUMER_KEY         = ''
+TWITTER_CONSUMER_SECRET      = ''
+FACEBOOK_APP_ID              = ''
+FACEBOOK_API_SECRET          = ''
+LINKEDIN_CONSUMER_KEY        = ''
+LINKEDIN_CONSUMER_SECRET     = ''
+ORKUT_CONSUMER_KEY           = ''
+ORKUT_CONSUMER_SECRET        = ''
+GOOGLE_CONSUMER_KEY          = ''
+GOOGLE_CONSUMER_SECRET       = ''
+GOOGLE_OAUTH2_CLIENT_ID      = '780527430747.apps.googleusercontent.com'
+GOOGLE_OAUTH2_CLIENT_SECRET  = 'fH_ZlYZltP_2zYyw3HCYuuac'
+FOURSQUARE_CONSUMER_KEY      = ''
+FOURSQUARE_CONSUMER_SECRET   = ''
+GITHUB_APP_ID                = ''
+GITHUB_API_SECRET            = ''
+DROPBOX_APP_ID               = ''
+DROPBOX_API_SECRET           = ''
+FLICKR_APP_ID                = ''
+FLICKR_API_SECRET            = ''
+INSTAGRAM_CLIENT_ID          = ''
+INSTAGRAM_CLIENT_SECRET      = ''
+
+LOGIN_URL          = '/account/login/'
+LOGIN_REDIRECT_URL = '/account/'
+LOGIN_ERROR_URL    = '/login-error/'
+
+SOCIAL_AUTH_EXPIRATION = 'expires'
+GOOGLE_OAUTH_EXTRA_SCOPE = ['http://picasaweb.google.com/data/']
+GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'access_type':'offline', 'approval_prompt':'force'}
 # COMPRESS
 
 COMPRESS_PRECOMPILERS = (

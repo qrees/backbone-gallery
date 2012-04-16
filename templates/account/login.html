@@ -16,4 +16,5 @@
         {% include "forms/password_field.html" with field=form.password %}
         <div><button type="submit" class="btn">{% trans "Login" %}</button></div>
     </form>
+    <a href="{% url account-register %}">Register</a>
 {% endblock %}

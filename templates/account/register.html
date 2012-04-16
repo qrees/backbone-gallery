@@ -18,4 +18,9 @@
         {% include "forms/password_field.html" with field=form.password2 %}
         <div><button type="submit" class="btn">{% trans "Register" %}</button></div>
     </form>
+    <ul>
+        <li>
+            <a href="{% url socialauth_begin 'google-oauth2' %}">Enter using Google</a>
+        </li>
+    </ul>
 {% endblock %}

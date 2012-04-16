@@ -60,7 +60,7 @@ class RegisterForm(BootstrapForm):
         return self.cleaned_data
 
     def save(self):
-        profile = Profile.objects.create(
+        profile = Profile.objects.create_account(
                 password=self.cleaned_data['password1'],
                 username=self.cleaned_data['username'],
                 email=self.cleaned_data['email'])
