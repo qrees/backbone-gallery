@@ -14,7 +14,9 @@
         <input type="hidden" name="next" value="{{ next }}"/>
         {% include "forms/text_field.html" with field=form.username %}
         {% include "forms/password_field.html" with field=form.password %}
-        <div><button type="submit" class="btn">{% trans "Login" %}</button></div>
+        <div>
+            <button type="submit" class="btn">{% trans "Login" %}</button>
+            <a class="btn" href="{% url socialauth_begin 'google-oauth2' %}">Enter using Google</a>
+        </div>
     </form>
-    <a href="{% url account-register %}">Register</a>
 {% endblock %}

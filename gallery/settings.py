@@ -221,7 +221,10 @@ LOGIN_ERROR_URL    = '/login-error/'
 
 SOCIAL_AUTH_EXPIRATION = 'expires'
 GOOGLE_OAUTH_EXTRA_SCOPE = ['http://picasaweb.google.com/data/']
-GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'access_type':'offline', 'approval_prompt':'force'}
+# approval_prompt = force:
+#   This will couse approval form always to apear, ignoring user preferences.
+# GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'access_type':'offline', 'approval_prompt':'force'}
+GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'access_type':'offline'}
 # COMPRESS
 
 COMPRESS_PRECOMPILERS = (

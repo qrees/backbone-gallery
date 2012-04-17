@@ -1,7 +1,7 @@
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.edit import FormView
 
 from account.forms import LoginForm, RegisterForm
@@ -19,6 +19,11 @@ class RegisterView(FormView):
         return reverse('account-login')
 
 
+class LogoutView(RedirectView):
+    def get_redirect_url(self, **kwargs):
+        return reverse('account-login')
+
+
 class LoginView(FormView):
     form_class = LoginForm
     template_name = 'account/login.html'
@@ -29,6 +34,7 @@ class LoginView(FormView):
         return super(LoginView, self).form_valid(form)
 
     def get_success_url(self):
+        # TODO : handle "next" vlaue
         return reverse('account-page')
 
 
