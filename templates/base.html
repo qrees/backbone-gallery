@@ -1,12 +1,13 @@
-    {% load compress i18n %}
+{% load compress i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title></title>
+    <title>{% trans "Qrees Gallery" %}</title>
     {% compress css %}
         <link rel="stylesheet" href="{{ STATIC_URL }}scss/main.scss" type="text/x-scss" charset="utf-8">
         <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-sass/bootstrap.scss" type="text/x-scss" charset="utf-8">
     {% endcompress %}
+        <script type="text/javascript" data-main="{{ STATIC_URL }}js/main"  src="{{ STATIC_URL }}js/require.js" ></script>
 </head>
 <body>
     <div class="navbar navbar-fixed-top">
