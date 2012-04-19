@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'social_auth',
 
     'account',
+    "albums",
 )
 
 # A sample logging configuration. The only tangible logging
