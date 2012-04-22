@@ -1,7 +1,9 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
+
 from django.db import models
 from django.dispatch.dispatcher import receiver
 
+from core.models import BaseResource
 from core.utils import gen_uuid
 
 from social_auth.signals import socialauth_registered
@@ -19,12 +21,20 @@ class ProfileManager(models.Manager):
         return profile
 
 
-class Profile(models.Model):
+class Profile(BaseResource):
     objects = ProfileManager()
 
     user = models.ForeignKey('auth.User')
-    email = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(max_length=255, unique=True)
     username = models.CharField(max_length=255, unique=True)
 
     def __unicode__(self):
         return self.username
+
+'''
+class ResourcePermission(models.Model):
+
+    person = models.ForeignKey(Profile)
+    permission = models.ForeignKey(Permission)
+    resource_pk = models.
+'''

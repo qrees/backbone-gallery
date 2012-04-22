@@ -124,6 +124,7 @@ INSTALLED_APPS = (
     "compressor",
     'social_auth',
 
+    "core",
     'account',
     "albums",
 )
