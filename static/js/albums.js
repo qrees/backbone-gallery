@@ -1,12 +1,16 @@
 define([
     'jQuery',
     'Underscore',
-    'Backbone'
-], function($, _, Backbone){
+    'Backbone',
+    'core',
+    '/templates.js?path='
+], function($, _, Backbone, Core){
     var models = {};
+    var views = {};
     var app = {
-        models: models
-    }
+        models: models,
+        views: views
+    };
 
     models.Album = Backbone.Model.extend({
         url: function(){
@@ -26,5 +30,19 @@ define([
         url: urlreverse('albums-list')
     });
 
+    views.AlbumView = Backbone.View.extend({
+        className : "album",
+        render : function() {
+            this.$el.empty();
+            this.$el.append($.tmpl('album.html', this.model.toJSON()));
+            return this;
+        }
+    });
+
+    views.AlbumCollectionView = Core.views.UpdatingCollectionView.extend({
+        options: {
+            childViewConstructor: views.AlbumView
+        }
+    });
     return app;
 });

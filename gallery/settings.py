@@ -111,6 +111,10 @@ TEMPLATE_DIRS = (
     _relative('templates'),
 )
 
+JS_TEMPLATES = (
+    _relative('templates/js'),
+)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

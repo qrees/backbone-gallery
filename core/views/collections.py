@@ -148,12 +148,6 @@ class Collection(CollectionMixin, ViewMixin, View):
             'object': item
         }
 
-    def get_context_data(self):
-        context = super(Collection, self).get_context_data()
-        context.update({
-            ''
-        })
-
     def get_item(self):
         item = self.get_model_instance()
         return self.render_to_response(self.get_item_context(item))

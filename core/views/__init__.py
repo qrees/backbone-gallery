@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from django.template.base import Template
 
 from core.views.collections import *
 
@@ -27,3 +28,33 @@ def jsreverse(request):
     return render_to_response("core/django_reverse.js",
             {"reverse_dict": json.dumps(d), "settings": settings},
         mimetype="text/javascript",)
+
+import json
+from django.template import loader
+from django.conf import settings
+from django import http
+import os.path
+import os
+
+def jstemplates(request):
+    if not 'path' in request.GET:
+        return http.HttpResponseBadRequest('Missing path query')
+    path = request.GET['path']
+    context = RequestContext(request=request)
+    templates = {}
+    for lookup in settings.JS_TEMPLATES:
+        joined = os.path.normpath(os.path.join(lookup, path))
+        prefix = os.path.commonprefix([lookup, joined])
+        if not prefix.startswith(lookup):
+            return http.HttpResponseBadRequest('Invalid path query')
+        if not os.path.isdir(joined):
+            return http.HttpResponseNotFound('Template path was not found')
+        files = os.listdir(joined)
+        for file in files:
+            tmpl_path = os.path.join(joined, file)
+            with open(tmpl_path) as tmpl_file:
+                tmpl = Template(tmpl_file.read())
+                templates[file] = tmpl.render(context)
+    json_dump = json.dumps(templates)
+    context.update({'templates': json_dump})
+    return render_to_response("core/jquery_templates.js", context_instance=context, mimetype="text/javascript")

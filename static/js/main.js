@@ -16,8 +16,10 @@ require.config({
 
 require(['albums',
     'order!jquery/jquery-1.7.2',
+    'order!jquery/jquery.tmpl',
     'order!underscore/underscore',
     'order!backbone/backbone'], function(albums_app){
+    var $ = require('jQuery');
 
     function log(){
         console.log(arguments);
@@ -26,7 +28,12 @@ require(['albums',
     albums.bind('add', log);
     albums.bind('refresh', log);
     albums.bind('all', log);
-    albums.fetch();
 
+    var albums_view = new albums_app.views.AlbumCollectionView({
+        collection: albums
+    });
+    albums_view.setElement($('[data-ui=albums]'));
+    albums_view.render();
+    albums.fetch();
     console.log("Main loaded");
 });

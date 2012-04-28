@@ -1,0 +1,3 @@
+[submodule "libs/jquery-tmpl"]
+	path = libs/jquery-tmpl
+	url = git@github.com:qrees/jquery-tmpl.git
