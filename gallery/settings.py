@@ -174,7 +174,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 
-
 # Django Social Auth settings
 
 AUTHENTICATION_BACKENDS = (
@@ -225,14 +224,22 @@ LOGIN_URL          = '/account/login/'
 LOGIN_REDIRECT_URL = '/account/'
 LOGIN_ERROR_URL    = '/login-error/'
 
+#
+# Social auth settings
+#
+
+SOCIAL_AUTH_SESSION_EXPIRATION = False
 SOCIAL_AUTH_EXPIRATION = 'expires'
 GOOGLE_OAUTH_EXTRA_SCOPE = ['http://picasaweb.google.com/data/']
 # approval_prompt = force:
 #   This will couse approval form always to apear, ignoring user preferences.
 # GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'access_type':'offline', 'approval_prompt':'force'}
 GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'access_type':'offline'}
-# COMPRESS
 
+
+#
+# COMPRESS settings
+#
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'python scss_process.py  {infile} {outfile}'),
 )

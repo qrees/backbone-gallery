@@ -5,4 +5,17 @@
     <div data-ui="albums">
 
     </div>
+    <form action="/albums/upload/" data-ui="upload" id="photo_upload">
+    {% csrf_token %}
+    <input id="fileupload" type="file" name="file" multiple>
+    <div data-ui="list">
+
+    </div>
+    <span class="btn" data-action="submit">Submit</span>
+    </form>
+    {% comment %}
+    <form action="{% url albums-upload %}">
+
+    </form>
+    {% endcomment %}
 {% endblock %}

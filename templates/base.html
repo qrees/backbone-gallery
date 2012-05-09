@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="{{ STATIC_URL }}scss/main.scss" type="text/x-scss" charset="utf-8">
         <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-sass/bootstrap.scss" type="text/x-scss" charset="utf-8">
     {% endcompress %}
-        <script type="text/javascript" src="{{ HOST_NAME }}{% url core-jsreverse %}"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/utils.js"></script>
         <script type="text/javascript" data-main="{{ STATIC_URL }}js/main"  src="{{ STATIC_URL }}js/require.js" ></script>
 </head>
 <body>

@@ -1,13 +1,36 @@
 define([
     'jQuery',
     'Underscore',
-    'Backbone'
+    'Backbone',
+    'Reverse'
 ], function($, _, Backbone){
     var views = {}, models = {};
     var app = {
         views: views,
         models: models
     };
+
+    models.Model = Backbone.Model.extend({
+        url: function(){
+            if (this.uuid){
+                return urlreverse('albums-item', {'uuid': this.uuid});
+            }else{
+                return this.collection.url;
+            }
+        },
+        parse: function(obj){
+            return obj.fields;
+        }
+    });
+
+    views.TemplateView = Backbone.View.extend({
+        template: null,
+        render: function() {
+            this.$el.empty();
+            this.$el.append($.tmpl(this.template, this.model.toJSON()));
+            return this;
+        }
+    });
 
     views.UpdatingCollectionView = Backbone.View.extend({
         initialize : function(options) {
@@ -57,6 +80,15 @@ define([
             return this;
         }
     });
+
+    Function.prototype.curry = function()
+    {
+        var method = this, args = Array.prototype.slice.call(arguments);
+        return function()
+        {
+            return method.apply(this, args.concat(Array.prototype.slice.call(arguments)));
+        };
+    };
 
     return app;
 });

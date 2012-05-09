@@ -1,3 +1,6 @@
 [submodule "libs/jquery-tmpl"]
 	path = libs/jquery-tmpl
 	url = git@github.com:qrees/jquery-tmpl.git
+[submodule "libs/jquery-file-upload"]
+	path = libs/jquery-file-upload
+	url = https://github.com/blueimp/jQuery-File-Upload.git
