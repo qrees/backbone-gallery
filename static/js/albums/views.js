@@ -7,11 +7,6 @@ define([
 ], function($, _, Backbone, Core, tmpl){
     var views = {};
 
-    views.UploadFileView = Core.views.TemplateView.extend({
-        template:tmpl['upload_file.html'],
-        className : "upload-file"
-    });
-
     views.PhotoView = Core.views.TemplateView.extend({
         template:tmpl['photo.html'],
         className : "photo"

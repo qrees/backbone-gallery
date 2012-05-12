@@ -1,5 +1,6 @@
 from django.views.generic.base import TemplateView
-from albums.models import Album
+from albums.forms import FileForm
+from albums.models import Album, File
 from core.decorators import view_decorator
 from core.views import ResourceView
 
@@ -16,3 +17,8 @@ def expose(view):
 @view_decorator(expose)
 class AlbumView(ResourceView):
     model = Album
+
+
+class FileView(ResourceView):
+    create_form = FileForm
+    model = File

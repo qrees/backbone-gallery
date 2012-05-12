@@ -1,5 +1,6 @@
 import importlib
 from django.core import serializers
+from django.db.models.fields.files import FieldFile
 
 from django.http import HttpResponse
 from django.utils import simplejson
@@ -35,12 +36,24 @@ class Presenter(object):
         kwargs['status'] = 406
         return self.response(**kwargs)
 
+from django.forms.models import model_to_dict
 
 class HandleQuerySets(simplejson.JSONEncoder):
     """ simplejson.JSONEncoder extension: handle querysets """
+
+    def model_to_dict(self, instance):
+        return {
+            'fields': model_to_dict(instance)
+        }
+
     def default(self, obj):
-        if isinstance(obj, (QuerySet, Model)):
-            return serializers.serialize("python", obj, ensure_ascii=False)
+        #default = simplejson.JSONEncoder.default
+        if isinstance(obj, (QuerySet, list, tuple)):
+            return [self.default(x) for x in obj]
+        if isinstance(obj, Model):
+            return self.model_to_dict(obj)
+        if isinstance(obj, FieldFile):
+            return obj.url
         return simplejson.JSONEncoder.default(self, obj)
 
 
@@ -120,12 +133,16 @@ class ViewMixin(DehydrateViewMizin, TemplateViewMixin):
         presenter = presenter_cls(view=self, mimetype=mimetype)
         return presenter
 
-    def render_to_response(self, context):
+    def render_to_response(self, context, **kwargs):
         presenter = self.get_presenter()
-        return presenter.render(context)
+        return presenter.render(context, **kwargs)
+
+    def response_not_allowed(self):
+        return self.render_to_response({}, status=405)
 
 
 class Collection(CollectionMixin, ViewMixin, View):
+    create_form = None
 
     def get_model_queryset(self):
         return self.model.objects.all()
@@ -139,14 +156,9 @@ class Collection(CollectionMixin, ViewMixin, View):
 
     def get_list_context(self, qs):
         return qs
-        return {
-            'objects': qs
-        }
 
     def get_item_context(self, item):
-        return {
-            'object': item
-        }
+        return [item]
 
     def get_item(self):
         item = self.get_model_instance()
@@ -157,11 +169,48 @@ class Collection(CollectionMixin, ViewMixin, View):
         return self.render_to_response(self.get_list_context(qs))
 
     def get(self, request, **kwargs):
+        '''
+            If object id is given in url return single object.
+            Otherwise return list of objects from this collection.
+        '''
         if self.pk_field in self.kwargs:
             return self.get_item()
         else:
             return self.get_list()
 
+    def create_form_valid(self, form):
+        instance = form.save()
+        return self.render_to_response(self.get_item_context(instance))
+
+    def create_form_invalid(self, form):
+        errors = self.extract_errors(form)
+        return self.render_to_response({
+            'errors': errors
+        }, status=400)
+
+    def get_create_form_kwargs(self):
+        return {
+            'data': self.request.POST,
+            'files': self.request.FILES
+        }
+
+    def process_create_form(self):
+        if self.create_form is None:
+            return self.response_not_allowed()
+        form_class = self.create_form
+        form = form_class(**self.get_create_form_kwargs())
+        if form.is_valid():
+            return self.create_form_valid(form)
+        else:
+            return self.create_form_invalid(form)
+
+    def post(self, request, **kwargs):
+        '''
+            Create object in collection
+        '''
+        if self.pk_field in self.kwargs:
+            return self.response_not_allowed()
+        return self.process_create_form()
 
 class ResourceView(Collection):
     pk_field = 'uuid'

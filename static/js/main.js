@@ -43,87 +43,9 @@ function(views, models, Core, tmpl){
     albums_view.render();
     albums.fetch();
 
-    var BaseView = Backbone.View.extend({
-        events: {
-            "click [data-action]": "_action"
-        },
-        _action: function(event){
-            var $target = $(event.currentTarget);
-            var action = "action_"+$target.data('action');
-            if(action in this){
-                this[action](event, $target);
-            }else{
-                console.error("Cannot find handler for action ", action, " in ", this);
-            }
-        }
-    });
-
-    var UploadFileView = BaseView.extend({
+    var upload_view = new Core.views.UploadFileView({
         template: tmpl['upload_file.html'],
-        initialize : function(options) {
-            _(this).bindAll('add', 'done', 'progress', 'progressall');
-        },
-        action_submit: function(){
-            _.each(this._files, function(data){
-                data.submit();
-            });
-        },
-        add: function(event, data){
-            var self = this;
-            //console.log(arguments);
-            var files = data.files;
-            var $list = this.$el.find('[data-ui=list]');
-            _.each(files, function(file){
-                var rendered = $.tmpl(self.template, file);
-                $list.append(rendered);
-                file['$el'] = rendered;
-            });
-            this._files.push(data);
-        },
-        done: function (e, data) {
-            $.each(data.result, function (index, file) {
-                $('<p/>').text(file.name).appendTo(this.$el);
-            });
-        },
-        progress: function(e, data){
-            var file = data.files[0];
-            var $progress = file.$el.find('[data-ui=progress]');
-            var progress = parseInt(data.loaded / data.total * 100, 10);
-            $progress.find('.bar').css('width', progress.toString() + "%");
-            console.log("progress", file.name, progress);
-        },
-        progressall: function(e, data){
-            console.log("progressall", parseInt(data.loaded / data.total * 100, 10));
-        },
-        render: function(){
-            this.$el.find('input[type=file]').fileupload({
-                dataType: 'json',
-                add: this.add,
-                done: this.done,
-                progress: this.progress,
-                progressall: this.progressall
-            });
-            this._files = [];
-        }
-    });
-
-    var upload_view = new UploadFileView({
         el:$('[data-ui=upload]')
     });
     upload_view.render();
-    /*
-    $(function () {
-        $('#fileupload').fileupload({
-            dataType: 'json',
-            add: function(e, data){
-                console.log(arguments);
-            },
-            done: function (e, data) {
-                $.each(data.result, function (index, file) {
-                    $('<p/>').text(file.name).appendTo(document.body);
-                });
-            }
-        });
-    });
-    */
 });
