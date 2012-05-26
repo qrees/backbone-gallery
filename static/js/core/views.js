@@ -18,12 +18,19 @@ define([
             }else{
                 console.error("Cannot find handler for action ", action, " in ", this);
             }
+        },
+        remove: function(){
+            this._rendered = false;
+        },
+        render: function(){
+            this._rendered = true;
         }
     });
 
     views.TemplateView = views.BaseView.extend({
         template: null,
         render: function() {
+            jssuper(views.TemplateView, 'render')(this, arguments);
             this.$el.empty();
             this.$el.append($.tmpl(this.template, this.model.toJSON()));
             return this;
@@ -48,7 +55,7 @@ define([
         },
         add: function(model) {
             var childView = new this._childViewConstructor({
-                model : model
+                model: model
             });
 
             this._childViews.push(childView);
@@ -65,10 +72,11 @@ define([
             this._childViews = _(this._childViews).without(viewToRemove);
 
             if (this._rendered) $(viewToRemove.$el).remove();
+            jssuper(views.UpdatingCollectionView, 'remove')(this, arguments);
         },
         render: function() {
+            jssuper(views.UpdatingCollectionView, 'render')(this, arguments);
             var that = this;
-            this._rendered = true;
 
             this.$el.empty();
             _(this._childViews).each(function(childView) {
@@ -76,6 +84,61 @@ define([
             });
 
             return this;
+        }
+    });
+
+    views.LayoutManager = views.TemplateView.extend({
+        /**
+         *
+         */
+        options: {
+            views: {
+                /*
+                name: {
+                    view: Backbone.View,
+                    collection: function(self){
+                        return that.collection;
+                    },
+                    selector: function|text
+                }
+                 */
+            }
+        },
+        initialize: function(){
+            var self = this;
+            self._views = {};
+            _.each(this.options.views, function(name, partial){
+                var collection;
+                if(_.isFunction(partial.collection)){
+                    collection = partial.collection(self);
+                }
+                if(_.isBoolean(partial.collection)){
+                    if(partial.collection)
+                        collection = self.collection;
+                }
+                if(_.isObject(partial.collection)){
+                    collection = partial.collection
+                }
+                var view = new partial.view({collection:collection});
+                self._views[name] = view;
+            });
+        },
+        render: function(){
+            var self = this;
+            jssuper(this.LeyoutManager, 'render')(this, arguments);
+            _.each(this._views, function(name, view){
+                var $view_el = self.$el.find(self.options[name].selector);
+                if($view_el.length === 1){
+                    view.setElement($view_el);
+                    view.render();
+                }
+                if($view_el.length === 0){
+                    console.log("Cannot display", name," in ", self,". Element not found.");
+                }
+                if($view_el.length > 1){
+                    console.log("Cannot display", name," in ", self,". Multiple elements found.");
+                }
+            });
         }
     });
 
@@ -123,7 +186,7 @@ define([
                 add: this.add,
                 done: this.done,
                 progress: this.progress,
-                progressall: this.progressall,
+                progressall: this.progressall
             });
             this._files = [];
         }

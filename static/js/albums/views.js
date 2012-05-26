@@ -12,15 +12,35 @@ define([
         className : "photo"
     });
 
-    views.AlbumView = Core.views.TemplateView.extend({
-        template:tmpl['album.html'],
+    views.AlbumItem = Core.views.TemplateView.extend({
+        template:tmpl['album_item.html'],
         className : "album"
     });
 
     views.AlbumCollectionView = Core.views.UpdatingCollectionView.extend({
         options: {
-            childViewConstructor: views.AlbumView
+            childViewConstructor: views.AlbumItem
+        },
+        render: function(){
+            jssuper(views.AlbumCollectionView, 'render')(this, arguments);
         }
     });
+
+    views.AlbumDetailsView = Core.views.LayoutManager.extend({
+        options: {
+            views: {
+                uploader: {
+                    view: Core.views.UploadFileView,
+                    collection: function(layout){
+                        return layout.model.photo_collection();
+                    }
+                },
+                photo_list: {
+
+                }
+            }
+        }
+    });
+
     return views;
 });

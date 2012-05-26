@@ -5,7 +5,7 @@
     <div data-ui="albums">
 
     </div>
-    <form action="{% url files-list %}" data-ui="upload" id="photo_upload">
+    <form action="{% url file-list %}" data-ui="upload" id="photo_upload">
     {% csrf_token %}
     <input id="fileupload" type="file" name="file" multiple>
     <div data-ui="list">

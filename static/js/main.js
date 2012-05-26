@@ -48,4 +48,6 @@ function(views, models, Core, tmpl){
         el:$('[data-ui=upload]')
     });
     upload_view.render();
+
+
 });

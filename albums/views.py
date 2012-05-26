@@ -19,6 +19,7 @@ class AlbumView(ResourceView):
     model = Album
 
 
+@view_decorator(expose)
 class FileView(ResourceView):
     create_form = FileForm
     model = File
