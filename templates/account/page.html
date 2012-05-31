@@ -5,12 +5,10 @@
     <div data-ui="albums">
 
     </div>
-    <form action="{% url file-list %}" data-ui="upload" id="photo_upload">
-    {% csrf_token %}
-    <input id="fileupload" type="file" name="file" multiple>
-    <div data-ui="list">
+    <div data-ui="upload_form">
 
     </div>
-    <span class="btn" data-action="submit">Submit</span>
-    </form>
+    <div data-ui="files">
+
+    </div>
 {% endblock %}

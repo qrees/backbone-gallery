@@ -7,12 +7,18 @@ define([
 ], function($, _, Backbone, Core, tmpl){
     var views = {};
 
-    views.PhotoView = Core.views.TemplateView.extend({
+    views.PhotoView = Core.views.ModelTemplateView.extend({
         template:tmpl['photo.html'],
         className : "photo"
     });
 
-    views.AlbumItem = Core.views.TemplateView.extend({
+    views.PhotoCollectionView = Core.views.UpdatingCollectionView.extend({
+        options: {
+            childViewConstructor: views.PhotoView
+        }
+    });
+
+    views.AlbumItem = Core.views.ModelTemplateView.extend({
         template:tmpl['album_item.html'],
         className : "album"
     });
@@ -20,23 +26,23 @@ define([
     views.AlbumCollectionView = Core.views.UpdatingCollectionView.extend({
         options: {
             childViewConstructor: views.AlbumItem
-        },
-        render: function(){
-            jssuper(views.AlbumCollectionView, 'render')(this, arguments);
         }
     });
 
-    views.AlbumDetailsView = Core.views.LayoutManager.extend({
+    views.FilesLayout = Core.views.LayoutManager.extend({
         options: {
             views: {
                 uploader: {
                     view: Core.views.UploadFileView,
-                    collection: function(layout){
-                        return layout.model.photo_collection();
-                    }
+                    view_args: {
+                        item_template: tmpl['upload_file.html'],
+                        template: tmpl['upload_form.html']
+                    },
+                    selector: '[data-ui=upload_form]'
                 },
-                photo_list: {
-
+                file_list: {
+                    view: Core.views.UploadFileView,
+                    selector: '[data-ui=files]'
                 }
             }
         }

@@ -44,10 +44,14 @@ function(views, models, Core, tmpl){
     albums.fetch();
 
     var upload_view = new Core.views.UploadFileView({
-        template: tmpl['upload_file.html'],
+        item_template: tmpl['upload_file.html'],
+        template: tmpl['upload_form.html'],
         el:$('[data-ui=upload]')
     });
     upload_view.render();
 
+    $(document).bind('item_selected', function(){
+        console.log("Following item was selected:", arguments);
+    })
 
 });

@@ -47,7 +47,6 @@ class HandleQuerySets(simplejson.JSONEncoder):
         }
 
     def default(self, obj):
-        #default = simplejson.JSONEncoder.default
         if isinstance(obj, (QuerySet, list, tuple)):
             return [self.default(x) for x in obj]
         if isinstance(obj, Model):

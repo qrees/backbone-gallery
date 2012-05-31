@@ -8,6 +8,10 @@ class Album(TimestampedModelMixin, BaseResource):
     name = models.CharField(max_length=255)
     owner = models.ForeignKey(Profile)
 
+    def as_dict(self):
+        d = super(Album, self).as_dict()
+        return d
+
 
 class File(TimestampedModelMixin, BaseResource):
     name = models.CharField(max_length=255)

@@ -1,3 +1,4 @@
+from django.forms.models import model_to_dict
 import uuid
 
 from django.db import models
@@ -18,3 +19,7 @@ class BaseResource(models.Model):
 
     class Meta:
         abstract = True
+
+    def as_dict(self):
+        d = model_to_dict(self)
+        return d

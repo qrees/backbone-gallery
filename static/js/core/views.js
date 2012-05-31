@@ -29,11 +29,23 @@ define([
 
     views.TemplateView = views.BaseView.extend({
         template: null,
+        getContext: function(){
+            return {};
+        },
         render: function() {
             jssuper(views.TemplateView, 'render')(this, arguments);
             this.$el.empty();
-            this.$el.append($.tmpl(this.template, this.model.toJSON()));
+            this.$el.append($.tmpl(this.template, this.getContext()));
             return this;
+        }
+    });
+
+    views.ModelTemplateView = views.TemplateView.extend({
+        getContext: function(){
+            return this.model.toJSON();
+        },
+        action_select: function(){
+            $(document).trigger('item_selected', this.model);
         }
     });
 
@@ -142,9 +154,9 @@ define([
         }
     });
 
-    views.UploadFileView = views.BaseView.extend({
+    views.UploadFileView = views.TemplateView.extend({
         options:{
-            template: null
+            item_template: null
         },
         initialize : function(options) {
             _(this).bindAll('add', 'done', 'progress', 'progressall');
@@ -159,7 +171,7 @@ define([
             var files = data.files;
             var $list = this.$el.find('[data-ui=list]');
             _.each(files, function(file){
-                var rendered = $.tmpl(self.options.template, file);
+                var rendered = $.tmpl(self.options.item_template, file);
                 $list.append(rendered);
                 file['$el'] = rendered;
             });
@@ -181,6 +193,7 @@ define([
             console.log("progressall", parseInt(data.loaded / data.total * 100, 10));
         },
         render: function(){
+            jssuper(views.UploadFileView, 'render')(this, arguments);
             this.$el.find('input[type=file]').fileupload({
                 dataType: 'json',
                 add: this.add,
