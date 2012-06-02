@@ -181,6 +181,12 @@ class Collection(CollectionMixin, ViewMixin, View):
         instance = form.save()
         return self.render_to_response(self.get_item_context(instance))
 
+    def extract_errors(self, form):
+        error_list = []
+        for field_name, val in form.errors.items():
+            error_list.append((field_name, val[0]))
+        return error_list
+
     def create_form_invalid(self, form):
         errors = self.extract_errors(form)
         return self.render_to_response({

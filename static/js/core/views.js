@@ -28,14 +28,16 @@ define([
     });
 
     views.TemplateView = views.BaseView.extend({
-        template: null,
+        options: {
+            template: null
+        },
         getContext: function(){
             return {};
         },
         render: function() {
             jssuper(views.TemplateView, 'render')(this, arguments);
             this.$el.empty();
-            this.$el.append($.tmpl(this.template, this.getContext()));
+            this.$el.append($.tmpl(this.options.template, this.getContext()));
             return this;
         }
     });
@@ -45,13 +47,16 @@ define([
             return this.model.toJSON();
         },
         action_select: function(){
-            $(document).trigger('item_selected', this.model);
+            $(this.$el).trigger('item_selected', this.model);
         }
     });
 
     views.UpdatingCollectionView = views.BaseView.extend({
+        events: {
+            "item_selected": "_item_selected"
+        },
         initialize : function(options) {
-            _(this).bindAll('add', 'remove', 'reset');
+            _(this).bindAll('add', 'remove', 'reset', '_item_selected');
 
             if (!this.options.childViewConstructor) throw "no child view constructor provided";
 
@@ -62,12 +67,16 @@ define([
             this.collection.each(this.add);
 
             this.collection.bind('add', this.add);
-            this.collection.bind('remove', this.remove);
+            this.collection.bind('remove', this.removeItem);
             this.collection.bind('reset', this.reset);
+        },
+        _item_selected: function(){
+            console.log("item selected in updating collection view", arguments);
         },
         add: function(model) {
             var childView = new this._childViewConstructor({
-                model: model
+                model: model,
+                parent: this
             });
 
             this._childViews.push(childView);
@@ -75,15 +84,22 @@ define([
             if (this._rendered) {
                 this.$el.append(childView.render().$el);
             }
+            //$(childView).bind('item_selected', this._item_selected);
         },
         reset: function(collection){
             _(collection.models).each(this.add);
         },
-        remove: function(model) {
+        removeItem: function(model){
             var viewToRemove = _(this._childViews).select(function(cv) { return cv.model === model; })[0];
             this._childViews = _(this._childViews).without(viewToRemove);
+            viewToRemove.remove();
+        },
+        remove: function(model) {
+            this.collection.unbind('add', this.add);
+            this.collection.unbind('remove', this.removeItem);
+            this.collection.unbind('reset', this.reset);
+            _.each(this._childViews, this.removeItem);
 
-            if (this._rendered) $(viewToRemove.$el).remove();
             jssuper(views.UpdatingCollectionView, 'remove')(this, arguments);
         },
         render: function() {
@@ -159,12 +175,15 @@ define([
             item_template: null
         },
         initialize : function(options) {
-            _(this).bindAll('add', 'done', 'progress', 'progressall');
+            _(this).bindAll('add', 'done', 'progress', 'progressall', 'formData');
         },
         action_submit: function(){
             _.each(this._files, function(data){
                 data.submit();
             });
+        },
+        formData: function(){
+            return this.options.formData
         },
         add: function(event, data){
             var self = this;
@@ -199,7 +218,8 @@ define([
                 add: this.add,
                 done: this.done,
                 progress: this.progress,
-                progressall: this.progressall
+                progressall: this.progressall,
+                formData: this.formData
             });
             this._files = [];
         }

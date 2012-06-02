@@ -15,7 +15,7 @@ def gen_uuid():
 
 
 class BaseResource(models.Model):
-    uuid = models.CharField(max_length=32, default=gen_uuid, unique=True)
+    uuid = models.CharField(max_length=32, default=gen_uuid, primary_key=True)
 
     class Meta:
         abstract = True

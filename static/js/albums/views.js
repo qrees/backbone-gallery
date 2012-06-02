@@ -8,7 +8,9 @@ define([
     var views = {};
 
     views.PhotoView = Core.views.ModelTemplateView.extend({
-        template:tmpl['photo.html'],
+        options: {
+            template:tmpl['photo.html']
+        },
         className : "photo"
     });
 
@@ -19,7 +21,9 @@ define([
     });
 
     views.AlbumItem = Core.views.ModelTemplateView.extend({
-        template:tmpl['album_item.html'],
+        options: {
+            template:tmpl['album_item.html']
+        },
         className : "album"
     });
 

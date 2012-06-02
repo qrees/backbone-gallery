@@ -4,7 +4,9 @@ define([
     'jQuery',
     'Underscore',
     'Backbone',
-    'Reverse'
+    'Reverse',
+    'order!jquery/jquery-1.7.2',
+    'order!jquery/jquery.cookies'
 ], function(views, models, $, _, Backbone){
     var app = {
         views: views,
@@ -25,6 +27,16 @@ define([
             return method.apply(this, args.concat(Array.prototype.slice.call(arguments)));
         };
     };
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            function safeMethod(method) {
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+            if (!safeMethod(settings.type) ) {
+                xhr.setRequestHeader("X-CSRFToken", $.cookies.get('csrftoken'));
+            }
+        }
+    });
 
     return app;
 });

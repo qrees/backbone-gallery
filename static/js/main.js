@@ -33,7 +33,7 @@ function(views, models, Core, tmpl){
     function log(){
         console.log(arguments);
     }
-    var albums = new models.Albums();
+    var albums = new models.AlbumCollection();
     albums.bind('all', log);
 
     var albums_view = new views.AlbumCollectionView({
@@ -43,15 +43,24 @@ function(views, models, Core, tmpl){
     albums_view.render();
     albums.fetch();
 
-    var upload_view = new Core.views.UploadFileView({
-        item_template: tmpl['upload_file.html'],
-        template: tmpl['upload_form.html'],
-        el:$('[data-ui=upload]')
-    });
-    upload_view.render();
+    var upload_view;
 
-    $(document).bind('item_selected', function(){
+    $(document).bind('item_selected', function(event, album){
         console.log("Following item was selected:", arguments);
+        var photos = album.fileCollection();
+        photos.fetch();
+        if(upload_view)
+            upload_view.remove();
+        upload_view = new Core.views.UploadFileView({
+            item_template: tmpl['upload_file.html'],
+            template: tmpl['upload_form.html'],
+            el:$('[data-ui=upload_form]'),
+            formData: [{
+                'name': 'album',
+                'value': album.id
+            }]
+        });
+        upload_view.render();
     })
 
 });
