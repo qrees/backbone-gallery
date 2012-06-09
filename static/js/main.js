@@ -43,14 +43,23 @@ function(views, models, Core, tmpl){
     albums_view.render();
     albums.fetch();
 
-    var upload_view;
+    var files_view;
 
     $(document).bind('item_selected', function(event, album){
         console.log("Following item was selected:", arguments);
-        var photos = album.fileCollection();
-        photos.fetch();
-        if(upload_view)
-            upload_view.remove();
+        //var photos = album.fileCollection();
+        //photos.fetch();
+        if(files_view)
+            files_view.remove();
+        var collection = album.fileCollection();
+        files_view = new views.FilesLayout({
+            'album': album,
+            collection: collection,
+            el: $('[data-ui=files_layout]')
+        });
+        files_view.render();
+        files_view.getView('file_list').collection.fetch();
+/*
         upload_view = new Core.views.UploadFileView({
             item_template: tmpl['upload_file.html'],
             template: tmpl['upload_form.html'],
@@ -61,6 +70,7 @@ function(views, models, Core, tmpl){
             }]
         });
         upload_view.render();
+        */
     })
 
 });

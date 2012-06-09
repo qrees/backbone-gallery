@@ -38,18 +38,31 @@ class Presenter(object):
 
 from django.forms.models import model_to_dict
 
+class MetaSerializable(type):
+
+    def __new__(meta, classname, bases, classDict):
+        return type.__new__(meta, classname, bases, classDict)
+
+    def __instancecheck__(self, instance):
+        return hasattr(instance, 'as_dict')
+
+
+class Serializable(object):
+    __metaclass__ = MetaSerializable
+
+
 class HandleQuerySets(simplejson.JSONEncoder):
     """ simplejson.JSONEncoder extension: handle querysets """
 
     def model_to_dict(self, instance):
         return {
-            'fields': model_to_dict(instance)
+            'fields': instance.as_dict()
         }
 
     def default(self, obj):
         if isinstance(obj, (QuerySet, list, tuple)):
             return [self.default(x) for x in obj]
-        if isinstance(obj, Model):
+        if isinstance(obj, Serializable):
             return self.model_to_dict(obj)
         if isinstance(obj, FieldFile):
             return obj.url

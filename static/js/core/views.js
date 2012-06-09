@@ -10,7 +10,14 @@ define([
         events: {
             "click [data-action]": "_action"
         },
+        initialize : function(options) {
+            this.locked = false;
+        },
         _action: function(event){
+            if(this.locked){
+                console.warn("Widget is locked, action ignored", event);
+                return;
+            }
             var $target = $(event.currentTarget);
             var action = "action_"+$target.data('action');
             if(action in this){
@@ -24,6 +31,12 @@ define([
         },
         render: function(){
             this._rendered = true;
+        },
+        lock: function(){
+            this.locked = true;
+        },
+        unlock: function(){
+            this.locked = false;
         }
     });
 
@@ -37,6 +50,9 @@ define([
         render: function() {
             jssuper(views.TemplateView, 'render')(this, arguments);
             this.$el.empty();
+            if(this.options.template === undefined){
+                console.error("Template is undefined, nothing will be rendered", this);
+            }
             this.$el.append($.tmpl(this.options.template, this.getContext()));
             return this;
         }
@@ -44,6 +60,7 @@ define([
 
     views.ModelTemplateView = views.TemplateView.extend({
         getContext: function(){
+            console.log("context:", this.model.toJSON());
             return this.model.toJSON();
         },
         action_select: function(){
@@ -57,6 +74,7 @@ define([
         },
         initialize : function(options) {
             _(this).bindAll('add', 'remove', 'reset', '_item_selected');
+            jssuper(views.UpdatingCollectionView, 'initialize')(this, arguments);
 
             if (!this.options.childViewConstructor) throw "no child view constructor provided";
 
@@ -135,27 +153,42 @@ define([
         initialize: function(){
             var self = this;
             self._views = {};
-            _.each(this.options.views, function(name, partial){
-                var collection;
+            _.each(this.options.views, function(partial, name){
+                var collection, view_args = {}, view;
+                collection = self.collection;
                 if(_.isFunction(partial.collection)){
                     collection = partial.collection(self);
                 }
                 if(_.isBoolean(partial.collection)){
-                    if(partial.collection)
-                        collection = self.collection;
+                    if(partial.collection === false)
+                        collection = undefined;
                 }
                 if(_.isObject(partial.collection)){
                     collection = partial.collection
                 }
-                var view = new partial.view({collection:collection});
+                if(_.isObject(partial.view_args) && (!_.isFunction(partial.view_args))){
+                    view_args = partial.view_args;
+                }
+                if(_.isFunction(partial.view_args)){
+                    view_args = partial.view_args(self);
+                }
+                view_args = $.extend({}, {
+                        collection: collection
+                    },
+                    view_args
+                );
+                view = new partial.view(view_args);
                 self._views[name] = view;
             });
         },
+        getView: function(name){
+            return this._views[name];
+        },
         render: function(){
             var self = this;
-            jssuper(this.LeyoutManager, 'render')(this, arguments);
-            _.each(this._views, function(name, view){
-                var $view_el = self.$el.find(self.options[name].selector);
+            jssuper(views.LayoutManager, 'render')(this, arguments);
+            _.each(this._views, function(view, name){
+                var $view_el = self.$el.find(self.options.views[name].selector);
                 if($view_el.length === 1){
                     view.setElement($view_el);
                     view.render();
@@ -166,6 +199,8 @@ define([
                 if($view_el.length > 1){
                     console.log("Cannot display", name," in ", self,". Multiple elements found.");
                 }
+                self._views[name].setElement($view_el);
+                self._views[name].render();
             });
         }
     });
@@ -176,8 +211,12 @@ define([
         },
         initialize : function(options) {
             _(this).bindAll('add', 'done', 'progress', 'progressall', 'formData');
+            this._next_id = 0;
         },
         action_submit: function(){
+            if(this._files.length === 0)
+                return;
+            this.lock();
             _.each(this._files, function(data){
                 data.submit();
             });
@@ -195,11 +234,29 @@ define([
                 file['$el'] = rendered;
             });
             this._files.push(data);
+            data._id = this._next_id;
+            this._next_id += 1;
+            console.log("ADD", data);
+        },
+        remove: function(data){
+            this._files = _.reject(this._files, function(file){
+                return data._id === file._id;
+            });
+            _.each(data.files, function(item){
+                item.$el.slideUp();
+            });
         },
         done: function (e, data) {
-            $.each(data.result, function (index, file) {
-                $('<p/>').text(file.name).appendTo(this.$el);
+            var self = this;
+            console.log("DONE", data);
+            this.remove(data);
+            _.each(data.result, function(file, index){
+                var model = new self.collection.model(file.fields);
+                self.collection.add(model);
             });
+            if(this._files.length === 0){
+                this.unlock();
+            }
         },
         progress: function(e, data){
             var file = data.files[0];

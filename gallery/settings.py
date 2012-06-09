@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     "south",
     "compressor",
     'social_auth',
+    'easy_thumbnails',
 
     "core",
     'account',
@@ -247,3 +248,23 @@ COMPRESS_PRECOMPILERS = (
 
 COMPRESS_ENABLED = True
 COMPRESS_ROOT = _relative('static/compress')
+
+MEDIA_ROOT = _relative('photos')
+MEDIA_URL = 'http://localhost/photos/'
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'x-small': {'size': (60, 45), 'make_square': True},
+        'small': {'size': (160, 120), 'make_square': True},
+        'medium': {'size': (260, 180), 'make_square': True},
+        'large': {'size': (360, 268), 'make_square': True},
+        },
+    }
+
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    'easy_thumbnails.processors.scale_and_crop',
+    'easy_thumbnails.processors.filters',
+    'albums.models.make_square',
+    )

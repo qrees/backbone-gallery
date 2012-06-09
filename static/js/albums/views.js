@@ -35,17 +35,24 @@ define([
 
     views.FilesLayout = Core.views.LayoutManager.extend({
         options: {
+            template: tmpl['files_layout.html'],
             views: {
                 uploader: {
                     view: Core.views.UploadFileView,
-                    view_args: {
-                        item_template: tmpl['upload_file.html'],
-                        template: tmpl['upload_form.html']
+                    view_args: function(layout){
+                        return {
+                            item_template: tmpl['upload_file.html'],
+                            template: tmpl['upload_form.html'],
+                            formData: [{
+                                'name': 'album',
+                                'value': layout.options.album.id
+                            }]
+                        }
                     },
                     selector: '[data-ui=upload_form]'
                 },
                 file_list: {
-                    view: Core.views.UploadFileView,
+                    view: views.PhotoCollectionView,
                     selector: '[data-ui=files]'
                 }
             }

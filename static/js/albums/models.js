@@ -5,7 +5,7 @@ define([
     'core'
 ], function($, _, Backbone, Core, tmpl){
     var models = {};
-
+/*
     models.BaseModel = Backbone.Model.extend({
         name: 'BaseModel',
         view_name: null,
@@ -18,7 +18,7 @@ define([
             }
         }
     });
-
+*/
     models.BaseCollection = Backbone.Collection.extend({
         name: 'BaseCollection',
         initialize: function(elements, options){
@@ -38,7 +38,7 @@ define([
         }
     });
 
-    models.Photo = models.BaseModel.extend({
+    models.Photo = Core.models.BaseModel.extend({
         view_name: 'file-item'
     });
 
@@ -47,11 +47,8 @@ define([
         url: urlreverse('file-list')
     });
 
-    models.Album = models.BaseModel.extend({
+    models.Album = Core.models.BaseModel.extend({
         view_name: 'album-item',
-        parse: function(obj){
-            return obj.fields;
-        },
         fileCollection: function(){
             if(!this.id){
                 console.error("Album id is not available");
